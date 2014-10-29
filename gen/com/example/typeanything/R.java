@@ -17,6 +17,7 @@ public final class R {
         public static final int abc_slide_out_top=0x7f040005;
         public static final int fade_in=0x7f040006;
         public static final int fade_out=0x7f040007;
+        public static final int property_animator=0x7f040008;
     }
     public static final class attr {
         /**  Custom divider drawable to use for elements in the action bar. 
@@ -1644,7 +1645,8 @@ containing a value of this type.
         public static final int abc_textfield_search_default_mtrl_alpha=0x7f020031;
         public static final int abc_textfield_search_material=0x7f020032;
         public static final int ic_action_new=0x7f020033;
-        public static final int ic_launcher=0x7f020034;
+        public static final int ic_action_save=0x7f020034;
+        public static final int ic_launcher=0x7f020035;
     }
     public static final class id {
         public static final int RelativeLayout1=0x7f050043;

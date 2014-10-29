@@ -1,8 +1,11 @@
 
 package com.example.typeanything;
 
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.app.Activity;
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -14,48 +17,79 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.InputMethodManager;
 
-public class NotesActivity extends ActionBarActivity {
+public class NotesActivity extends ActionBarActivity implements InputFragment.OnNoteSavedListener,
+        HolderFragment.OnResumeListener {
 
     private static final String LOG_TAG = "ActionBarActivity";
 
-    private FloatingActionButton fabButton = null;
-    
-    private HolderFragment mHFrag = null;
-    
-    private InputFragment mIFrag = null;
-    
-    private enum Frags {
-    	Holder,
-    	Input,
-    };
+    private FloatingActionButton fab_add_btn = null;
 
-    private static Frags sWhichFrag = Frags.Holder;
+    private FloatingActionButton fab_save_btn = null;
+
+    public static HolderFragment mHFrag = null;
+
+    public static InputFragment mIFrag = null;
+
+    public static DatabaseHelper db;
+    
+    public enum Fragments {
+        Holder,
+        Input
+    };
+    
+    private static Fragments sCurrentFrag = Fragments.Holder; 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d(LOG_TAG,"Inside onCreate()");
+        Log.d(LOG_TAG, "Inside onCreate()");
         setContentView(R.layout.activity_notes);
 
-        fabButton = new FloatingActionButton.Builder(this)
+        db = new DatabaseHelper(this);
+
+        fab_add_btn = new FloatingActionButton.Builder(this)
                 .withDrawable(getResources().getDrawable(R.drawable.ic_action_new))
                 .withButtonColor(Color.GRAY)
-                .withGravity(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL).withMargins(0, 0, 0, 16)
+                .withGravity(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL).withMargins(0, 0, 0, 15)
                 .create();
 
-        fabButton.animate();
+        fab_add_btn.animate();
 
-        fabButton.setOnClickListener(new OnClickListener() {
+        fab_add_btn.setOnClickListener(new OnClickListener() {
 
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
-                displayView(Frags.Input);
+                displayFragment(mIFrag, InputFragment.LOG_TAG);
             }
         });
 
-        displayView(Frags.Holder);
+        fab_save_btn = new FloatingActionButton.Builder(this)
+                .withDrawable(getResources().getDrawable(R.drawable.ic_action_save))
+                .withButtonColor(Color.GRAY).withGravity(Gravity.TOP | Gravity.END)
+                .withMargins(0, 10, 0, 0).create();
+
+        fab_save_btn.animate();
+
+        fab_save_btn.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                // TODO Auto-generated method stub
+                ((InputFragment) getSupportFragmentManager().findFragmentByTag(
+                        InputFragment.LOG_TAG)).saveNote();
+
+                if (fab_save_btn != null) {
+                    fab_save_btn.setVisibility(View.INVISIBLE);
+                }
+            }
+        });
+
+        fab_save_btn.setVisibility(View.INVISIBLE);
+
+        displayFragment(mHFrag, HolderFragment.LOG_TAG);
         getWindow().setExitTransition(new Fade());
     }
 
@@ -78,47 +112,42 @@ public class NotesActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void displayView(Frags frag) {
-        
-        Log.d(LOG_TAG,"frag == " + frag.toString());
-        // update the main content by replacing fragments
+    private void displayFragment(Fragment frag, String tag) {
 
-        FragmentManager fragmentManager = getSupportFragmentManager();
-		FragmentTransaction ft = fragmentManager.beginTransaction();
-		ft.setCustomAnimations(R.anim.abc_slide_in_top, R.anim.abc_slide_out_bottom);
-        switch(frag) {
-        	case Holder:
-        		Log.d(LOG_TAG, "In CASE HOLDER");
-                fabButton.setVisibility(View.VISIBLE);
-        		if (mHFrag == null){
-        			Log.d(LOG_TAG, "mHFrag == null");
-        			mHFrag = new HolderFragment();
-        		}
-        		sWhichFrag = Frags.Holder;
-        		ft.replace(R.id.container, mHFrag).commit();
-        		break;
-        	case Input:
-        		Log.d(LOG_TAG, "In CASE INPUT");
-                fabButton.setVisibility(View.INVISIBLE);
-        		if (mIFrag == null) {
-        			Log.d(LOG_TAG, "mIFrag == null");
-        			mIFrag = new InputFragment();
-        		}
-        		sWhichFrag = Frags.Input;
-        		ft.replace(R.id.container, mIFrag).commit();
-        		break;
+        // update the main content by replacing fragments
+        if (frag == null) {
+            if (tag.equals(HolderFragment.LOG_TAG)) {
+                sCurrentFrag = Fragments.Holder;
+                frag = new HolderFragment();
+            } else if (tag.equals(InputFragment.LOG_TAG)) {
+                sCurrentFrag = Fragments.Input;
+                frag = new InputFragment();
+            }
         }
 
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction ft = fragmentManager.beginTransaction();
+        ft.setCustomAnimations(R.anim.abc_slide_in_top, R.anim.abc_slide_out_bottom);
+        ft.replace(R.id.container, frag, tag);
+        ft.commit();
+        Log.d(LOG_TAG, "IN displayFragment | BackStackEntry Count = "
+                + getSupportFragmentManager().getBackStackEntryCount());
     }
 
     @Override
     public void onBackPressed() {
         // TODO Auto-generated method stub
-        if (sWhichFrag == Frags.Input) {
-            displayView(Frags.Holder);
-        } else {
-            super.onBackPressed();
+        if (sCurrentFrag == Fragments.Input){
+            displayFragment(mHFrag, HolderFragment.LOG_TAG);
         }
+        super.onBackPressed();
+
+        Log.d(LOG_TAG, "IN onBackPressed | BackStackEntry Count = "
+                + getSupportFragmentManager().getBackStackEntryCount());
+        /*
+         * if (sWhichFrag == Frags.Input) { displayFragment(mHFrag); } else {
+         * super.onBackPressed(); }
+         */
     }
 
     public void setABColors(int color) {
@@ -127,4 +156,45 @@ public class NotesActivity extends ActionBarActivity {
         ColorDrawable colorDrawable = new ColorDrawable(color);
         getSupportActionBar().setBackgroundDrawable(colorDrawable);
     }
+
+    @Override
+    public void onNoteSaved() {
+        // TODO Auto-generated method stub
+        Log.d(LOG_TAG, "Inside onNoteSaved");
+        displayFragment(mHFrag, HolderFragment.LOG_TAG);
+    }
+
+    @Override
+    public void showAddButton() {
+        // TODO Auto-generated method stub
+        if (fab_add_btn != null)
+            fab_add_btn.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideAddButton() {
+        // TODO Auto-generated method stub
+        if (fab_add_btn != null)
+            fab_add_btn.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    public void showSaveButton() {
+        // TODO Auto-generated method stub
+        if (fab_save_btn != null)
+            fab_save_btn.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideSaveButton() {
+        // TODO Auto-generated method stub
+        if (fab_save_btn != null)
+            fab_save_btn.setVisibility(View.INVISIBLE);
+    }
+
+    public static void hideSoftKeyboard (Activity activity, View view) {
+        InputMethodManager imm = (InputMethodManager)activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getApplicationWindowToken(), 0);
+    }
+
 }
