@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.RippleDrawable;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +22,8 @@ public class MyNoteAdapter extends ArrayAdapter<MyNote> {
     
     private List<MyNote> mNotes = new ArrayList<MyNote>();
     private LayoutInflater mInflater;
+    
+    private static final String LOG_TAG = "MyNoteAdapter";
 
     public MyNoteAdapter(Context context, List<MyNote> objects) {
         super(context, 0);
@@ -52,9 +55,16 @@ public class MyNoteAdapter extends ArrayAdapter<MyNote> {
         tv.setText(mNotes.get(position).getNote());
         //tv2.setText(mNotes.get(position).getNote().substring(0, 1).toUpperCase());
         tv2.setText(mNotes.get(position).getDate());
+        
+        /*
+         * 
+         * String number = "1234,56,789";
+int commaCount = temp.replaceAll("[^\n]*", "").length();
+
+
         tv2.setTextSize(8);
         tv.setTextSize(25);
-        /*
+        
         Random randomGenerator = new Random();
         int r = randomGenerator.nextInt(255);
         int g = randomGenerator.nextInt(100);
