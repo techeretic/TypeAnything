@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
 
+
 public class NotesActivity extends ActionBarActivity implements InputFragment.OnNoteSavedListener,
         HolderFragment.OnResumeListener {
 
@@ -138,9 +139,11 @@ public class NotesActivity extends ActionBarActivity implements InputFragment.On
     public void onBackPressed() {
         // TODO Auto-generated method stub
         if (sCurrentFrag == Fragments.Input){
+            Log.d(LOG_TAG, "Gonna Show HolderFragment");
             displayFragment(mHFrag, HolderFragment.LOG_TAG);
+        } else {
+            super.onBackPressed();
         }
-        super.onBackPressed();
 
         Log.d(LOG_TAG, "IN onBackPressed | BackStackEntry Count = "
                 + getSupportFragmentManager().getBackStackEntryCount());
@@ -155,6 +158,7 @@ public class NotesActivity extends ActionBarActivity implements InputFragment.On
 
         ColorDrawable colorDrawable = new ColorDrawable(color);
         getSupportActionBar().setBackgroundDrawable(colorDrawable);
+        getSupportActionBar().setElevation(5);
     }
 
     @Override

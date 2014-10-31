@@ -13,6 +13,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.GridView;
+import android.widget.ListView;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 /**
  * @author p.shetye
@@ -20,6 +26,10 @@ import android.view.ViewGroup;
 public class HolderFragment extends Fragment {
 
     public static final String LOG_TAG = "HolderFragment";
+    
+    private static List<MyNote> sMyNotes = new ArrayList<MyNote>();
+    
+    MyNoteAdapter mNoteAdapter = null;
 
     // Container Activity must implement this interface
     public interface OnResumeListener {
@@ -40,6 +50,8 @@ public class HolderFragment extends Fragment {
     public void onAttach(Activity activity) {
         // TODO Auto-generated method stub
         super.onAttach(activity);
+        
+        sMyNotes = NotesActivity.db.getAllNotes();
 
         try {
             mCallBack = (OnResumeListener) activity;
@@ -60,10 +72,22 @@ public class HolderFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         // TODO Auto-generated method stub
         super.onActivityCreated(savedInstanceState);
-
-        ((NotesActivity) getActivity()).setABColors(Color.rgb(199, 36, 36));
+        Random randomGenerator = new Random();
+        int r = randomGenerator.nextInt(255);
+        int g = randomGenerator.nextInt(255);
+        int b = randomGenerator.nextInt(255);
+        //((NotesActivity) getActivity()).setABColors(Color.rgb(199, 36, 36));
+        
+        ((NotesActivity) getActivity()).setABColors(Color.rgb(r, g, b));
         
         NotesActivity.hideSoftKeyboard(getActivity(), getView());
+        
+        Log.d(LOG_TAG, "sMyNotes size = " + sMyNotes.size());
+        
+        mNoteAdapter = new MyNoteAdapter(getActivity(), sMyNotes);
+        
+        ListView gv = (ListView) getView().findViewById(R.id.ListView);
+        gv.setAdapter(mNoteAdapter);
     }
 
     @Override

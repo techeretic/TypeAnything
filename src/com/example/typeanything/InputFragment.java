@@ -17,6 +17,8 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
+import java.util.Random;
+
 /**
  * @author p.shetye
  */
@@ -80,7 +82,12 @@ public class InputFragment extends Fragment {
         // TODO Auto-generated method stub
         super.onActivityCreated(savedInstanceState);
 
-        ((NotesActivity) getActivity()).setABColors(Color.rgb(191, 207, 0));
+        Random randomGenerator = new Random();
+        int r = randomGenerator.nextInt(255);
+        int g = randomGenerator.nextInt(255);
+        int b = randomGenerator.nextInt(255);
+        //((NotesActivity) getActivity()).setABColors(Color.rgb(191, 207, 0));
+        ((NotesActivity) getActivity()).setABColors(Color.rgb(r, g, b));
         EditText textView = (EditText) getView().findViewById(R.id.editText1);
 
         textView.requestFocus();
