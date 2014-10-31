@@ -1,32 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@drawable/note_card_ripple"
     android:layout_marginTop="15dp"
     android:layout_marginBottom="15dp"
     android:elevation="5dp" >
-    <TextView
-        android:id="@+id/textView1"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:gravity="fill_vertical"
-        android:maxLines="8"
-        android:paddingTop="15dp"
-        android:paddingBottom="15dp"
-        android:paddingStart="15dp"
-        android:paddingEnd="15dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginBottom="15dp" />
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical|center_horizontal"
-        android:layout_gravity="center_vertical|center_horizontal"
-        android:paddingTop="15dp"
-        android:paddingBottom="15dp"
-        android:paddingStart="15dp"
-        android:paddingEnd="15dp" />
-</LinearLayout>
+    
+	<LinearLayout 
+		android:id="@+id/layout_view"
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent"
+	    android:orientation="vertical" >
+	    <TextView
+	        android:id="@+id/textView1"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:gravity="fill_vertical"
+	        android:maxLines="8"
+	        android:paddingTop="15dp"
+	        android:paddingBottom="15dp"
+	        android:paddingStart="15dp"
+	        android:paddingEnd="15dp"
+	        android:layout_marginTop="15dp"
+	        android:layout_marginBottom="15dp" />
+	    <TextView
+	        android:id="@+id/textView2"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:gravity="bottom|right"
+	        android:layout_gravity="bottom|right"
+	        android:paddingTop="15dp"
+	        android:paddingBottom="15dp"
+	        android:paddingStart="15dp"
+	        android:paddingEnd="15dp" />
+    </LinearLayout>
+</RelativeLayout>

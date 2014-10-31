@@ -1,6 +1,8 @@
 
 package com.example.typeanything;
 
+import java.util.Random;
+
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -47,12 +49,17 @@ public class NotesActivity extends ActionBarActivity implements InputFragment.On
         super.onCreate(savedInstanceState);
         Log.d(LOG_TAG, "Inside onCreate()");
         setContentView(R.layout.activity_notes);
+        
+        Random randomGenerator = new Random();
+        int r = randomGenerator.nextInt(255);
+        int g = randomGenerator.nextInt(255);
+        int b = randomGenerator.nextInt(255);
 
         db = new DatabaseHelper(this);
 
         fab_add_btn = new FloatingActionButton.Builder(this)
                 .withDrawable(getResources().getDrawable(R.drawable.ic_action_new))
-                .withButtonColor(Color.GRAY)
+                .withButtonColor(Color.rgb(r,g,b))
                 .withGravity(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL).withMargins(0, 0, 0, 15)
                 .create();
 
@@ -69,7 +76,7 @@ public class NotesActivity extends ActionBarActivity implements InputFragment.On
 
         fab_save_btn = new FloatingActionButton.Builder(this)
                 .withDrawable(getResources().getDrawable(R.drawable.ic_action_save))
-                .withButtonColor(Color.GRAY).withGravity(Gravity.TOP | Gravity.END)
+                .withButtonColor(Color.rgb(r,g,b)).withGravity(Gravity.TOP | Gravity.END)
                 .withMargins(0, 10, 0, 0).create();
 
         fab_save_btn.animate();

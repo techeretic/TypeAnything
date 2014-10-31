@@ -78,7 +78,7 @@ public class HolderFragment extends Fragment {
         int b = randomGenerator.nextInt(255);
         //((NotesActivity) getActivity()).setABColors(Color.rgb(199, 36, 36));
         
-        ((NotesActivity) getActivity()).setABColors(Color.rgb(r, g, b));
+        ((NotesActivity) getActivity()).setABColors(Color.argb(128, r, g, b));
         
         NotesActivity.hideSoftKeyboard(getActivity(), getView());
         
