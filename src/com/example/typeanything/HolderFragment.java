@@ -13,7 +13,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.GridView;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -26,15 +25,18 @@ import java.util.Random;
 public class HolderFragment extends Fragment {
 
     public static final String LOG_TAG = "HolderFragment";
-    
+
     private static List<MyNote> sMyNotes = new ArrayList<MyNote>();
-    
+
     MyNoteAdapter mNoteAdapter = null;
 
     // Container Activity must implement this interface
     public interface OnResumeListener {
         public void showAddButton();
+
         public void hideAddButton();
+
+        public void noteSelected(MyNote note);
     };
 
     OnResumeListener mCallBack;
@@ -50,7 +52,7 @@ public class HolderFragment extends Fragment {
     public void onAttach(Activity activity) {
         // TODO Auto-generated method stub
         super.onAttach(activity);
-        
+
         sMyNotes = NotesActivity.db.getAllNotes();
 
         try {
@@ -76,16 +78,16 @@ public class HolderFragment extends Fragment {
         int r = randomGenerator.nextInt(255);
         int g = randomGenerator.nextInt(255);
         int b = randomGenerator.nextInt(255);
-        //((NotesActivity) getActivity()).setABColors(Color.rgb(199, 36, 36));
-        
+        // ((NotesActivity) getActivity()).setABColors(Color.rgb(199, 36, 36));
+
         ((NotesActivity) getActivity()).setABColors(Color.argb(128, r, g, b));
-        
+
         NotesActivity.hideSoftKeyboard(getActivity(), getView());
-        
+
         Log.d(LOG_TAG, "sMyNotes size = " + sMyNotes.size());
-        
-        mNoteAdapter = new MyNoteAdapter(getActivity(), sMyNotes);
-        
+
+        mNoteAdapter = new MyNoteAdapter((NotesActivity) getActivity(), sMyNotes);
+
         ListView gv = (ListView) getView().findViewById(R.id.ListView);
         gv.setAdapter(mNoteAdapter);
     }
@@ -105,6 +107,12 @@ public class HolderFragment extends Fragment {
         super.onPause();
         if (mCallBack != null) {
             mCallBack.hideAddButton();
+        }
+    }
+
+    public void viewNote(MyNote note) {
+        if (mCallBack != null) {
+            mCallBack.noteSelected(note);
         }
     }
 }

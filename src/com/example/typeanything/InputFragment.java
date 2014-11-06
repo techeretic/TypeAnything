@@ -29,7 +29,9 @@ public class InputFragment extends Fragment {
     // Container Activity must implement this interface
     public interface OnNoteSavedListener {
         public void onNoteSaved();
+
         public void showSaveButton();
+
         public void hideSaveButton();
     };
 
@@ -86,7 +88,7 @@ public class InputFragment extends Fragment {
         int r = randomGenerator.nextInt(255);
         int g = randomGenerator.nextInt(255);
         int b = randomGenerator.nextInt(255);
-        //((NotesActivity) getActivity()).setABColors(Color.rgb(191, 207, 0));
+        // ((NotesActivity) getActivity()).setABColors(Color.rgb(191, 207, 0));
         ((NotesActivity) getActivity()).setABColors(Color.argb(128, r, g, b));
         EditText textView = (EditText) getView().findViewById(R.id.editText1);
 
@@ -100,9 +102,12 @@ public class InputFragment extends Fragment {
 
     public void saveNote() {
         EditText textView = (EditText) getView().findViewById(R.id.editText1);
-        MyNote note = new MyNote((int) System.currentTimeMillis(), textView.getText().toString());
-        NotesActivity.db.addNote(note);
-        textView.setText("");
+        if (!textView.getText().toString().isEmpty()) {
+            MyNote note = new MyNote((int) System.currentTimeMillis(), textView.getText()
+                    .toString());
+            NotesActivity.db.addNote(note);
+            textView.setText("");
+        }
         if (mCallBack != null) {
             mCallBack.onNoteSaved();
         }

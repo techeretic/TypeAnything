@@ -1,9 +1,13 @@
 package com.example.typeanything;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Objects;
 
-public class MyNote {
+public class MyNote implements Parcelable{
 	long _id;
 	String pNote;
 	String pDate;
@@ -61,4 +65,39 @@ public class MyNote {
 	public void setDate(String pDate) {
 		this.pDate = pDate;
 	}
+	
+	// Parcelling part
+    public MyNote(Parcel in){
+        String[] data = new String[3];
+
+        in.readStringArray(data);
+        this._id = Long.getLong(data[0]);
+        this.pNote = data[1];
+        this.pDate = data[2];
+    }
+    
+    @Override
+    public int describeContents() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        // TODO Auto-generated method stub
+        dest.writeStringArray(new String[] {Objects.toString(this._id, null),
+                this.pNote,
+                this.pDate});
+    }
+
+    @SuppressWarnings("rawtypes")
+    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
+        public MyNote createFromParcel(Parcel in) {
+            return new MyNote(in); 
+        }
+
+        public MyNote[] newArray(int size) {
+            return new MyNote[size];
+        }
+    };
 }
